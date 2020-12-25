@@ -11,7 +11,8 @@ import numpy as np
 XLSX_PATH = r'../data/lt01-a10.xlsx'
 #読み込むシート名
 SHEET_NAME = '季節調整値'
-#SHEET_NAME = '原数値'
+# 原数値シートでは、1972年1月-1972年6月までのデータは「...」という文字列が記入されていることに注意
+#SHEET_NAME = '原数値' 
 #SHEET_NAME = '原数値 (沖縄県除く1953-1973)'
 #SHEET_NAME = '季節指数'
 
@@ -58,6 +59,10 @@ sex_descriptions = [
             '女'
         ]
 
+if SHEET_NAME == '季節指数':
+    labels[5] = 'Unemployment rate'
+    label_descriptions[5] = '完全失業率'
+
 era_patterns = [
             { 'era': '昭和', 'base_year': 1925 },
             { 'era': '平成', 'base_year': 1988 },
@@ -75,15 +80,15 @@ def execute_pipeline():
     df = append_column_labels(df)
     return df
 
-def query_data_series(df, from_year_month_inclusive, to_year_month_inclusize, label_name, sex_category):
+def query_data_series(df, from_year_month_inclusive, to_year_month_inclusive, label_name, sex_category):
     """
         年月の範囲および、項目名（列名）を指定して、時系列データを取得します
     
         例：　2008年1月から2020年10月までの、完全失業率（男女計）を取得
         df = execute_pipeline()
-        search_data_series(df, (2008, 1), (2020, 10), 'Unemployment rate  (percent)', 'Both sexes')
+        query_data_series(df, (2008, 1), (2020, 10), 'Unemployment rate  (percent)', 'Both sexes')
     """
-    return df.loc[from_year_month_inclusive:to_year_month_inclusize][label_name][sex_category]
+    return df.loc[from_year_month_inclusive:to_year_month_inclusive][label_name][sex_category]
     
 
 def read_xlsx():
