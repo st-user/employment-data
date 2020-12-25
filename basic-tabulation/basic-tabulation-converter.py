@@ -2,6 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 @author: Tomoki Sato
+2020/12/25
+  作成および動作確認バージョン
+  　Python 3.7.0
+  　pandas 0.25.1
+  　numpy 1.17.2 
+
 """
 
 import pandas as pd
@@ -12,7 +18,7 @@ XLSX_PATH = r'../data/lt01-a10.xlsx'
 #読み込むシート名
 SHEET_NAME = '季節調整値'
 # 原数値シートでは、1972年1月-1972年6月までのデータは「...」という文字列が記入されていることに注意
-#SHEET_NAME = '原数値' 
+#SHEET_NAME = '原数値'
 #SHEET_NAME = '原数値 (沖縄県除く1953-1973)'
 #SHEET_NAME = '季節指数'
 
@@ -83,13 +89,13 @@ def execute_pipeline():
 def query_data_series(df, from_year_month_inclusive, to_year_month_inclusive, label_name, sex_category):
     """
         年月の範囲および、項目名（列名）を指定して、時系列データを取得します
-    
+
         例：　2008年1月から2020年10月までの、完全失業率（男女計）を取得
         df = execute_pipeline()
         query_data_series(df, (2008, 1), (2020, 10), 'Unemployment rate  (percent)', 'Both sexes')
     """
     return df.loc[from_year_month_inclusive:to_year_month_inclusive][label_name][sex_category]
-    
+
 
 def read_xlsx():
     xlsx = pd.ExcelFile(XLSX_PATH)
@@ -113,7 +119,7 @@ def drop_original_year_month_columns(df):
 def append_column_labels(df):
     df.columns = _create_column_labels()
     return df
-    
+
 
 def _create_year_month_index(df):
     year_series = df.iloc[:,XLSX_BASE_YEAR_COLUMN_INDEX].apply(_convert_era).fillna(method='pad').apply(int)
